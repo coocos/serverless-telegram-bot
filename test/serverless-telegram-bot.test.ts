@@ -1,17 +1,19 @@
-// import * as cdk from 'aws-cdk-lib';
-// import { Template } from 'aws-cdk-lib/assertions';
-// import * as ServerlessTelegramBot from '../lib/serverless-telegram-bot-stack';
+import * as cdk from "aws-cdk-lib";
+import { Template } from "aws-cdk-lib/assertions";
+import * as ServerlessTelegramBot from "../lib/serverless-telegram-bot-stack";
 
-// example test. To run these tests, uncomment this file along with the
-// example resource in lib/serverless-telegram-bot-stack.ts
-test('SQS Queue Created', () => {
-//   const app = new cdk.App();
-//     // WHEN
-//   const stack = new ServerlessTelegramBot.ServerlessTelegramBotStack(app, 'MyTestStack');
-//     // THEN
-//   const template = Template.fromStack(stack);
+describe("ServerlessTelegramBotStack", () => {
+  test("synthesizes as expected", () => {
+    const app = new cdk.App();
+    const stack = new ServerlessTelegramBot.ServerlessTelegramBotStack(
+      app,
+      "TestStack"
+    );
 
-//   template.hasResourceProperties('AWS::SQS::Queue', {
-//     VisibilityTimeout: 300
-//   });
+    const template = Template.fromStack(stack);
+    template.hasResourceProperties("AWS::Lambda::Function", {
+      Runtime: "nodejs18.x",
+    });
+    template.resourceCountIs("AWS::Lambda::Url", 1);
+  });
 });
