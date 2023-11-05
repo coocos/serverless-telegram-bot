@@ -7,8 +7,8 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "jest --silent src/",
-    "test-cdk": "jest --silent test/",
+    "test": "jest --silent --verbose src/",
+    "test-cdk": "jest --silent --verbose test/",
     "cdk": "cdk"
   },
   "devDependencies": {

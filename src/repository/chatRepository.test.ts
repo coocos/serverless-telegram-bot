@@ -13,7 +13,7 @@ describe("ChatRepository", () => {
     dynamoServer.close(callback);
   });
 
-  test("should return an empty list if no chats exist", async () => {
+  test("returns an empty list if no chats exist", async () => {
     const repository = new ChatRepository(dynamoConfiguration);
 
     const chats = await repository.list();
@@ -21,7 +21,7 @@ describe("ChatRepository", () => {
     expect(chats.length).toBe(0);
   });
 
-  test("should add chat", async () => {
+  test("adds chat", async () => {
     const repository = new ChatRepository(dynamoConfiguration);
     await repository.add(1);
 
@@ -29,7 +29,7 @@ describe("ChatRepository", () => {
     expect(chats).toEqual([1]);
   });
 
-  test("should remove chat", async () => {
+  test("removes chat", async () => {
     const repository = new ChatRepository(dynamoConfiguration);
 
     await repository.add(1);

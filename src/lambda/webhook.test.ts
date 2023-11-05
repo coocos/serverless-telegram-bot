@@ -43,12 +43,12 @@ function createApiGatewayProxyEvent(
   };
 }
 
-describe("Webhook handler", () => {
+describe("Webhook lambda", () => {
   afterAll(() => {
     jest.restoreAllMocks();
   });
 
-  test("should handle adding bot to group", async () => {
+  test("handles adding bot to group", async () => {
     const addedToGroupEvent = {
       update_id: 123456789,
       my_chat_member: {
@@ -94,7 +94,7 @@ describe("Webhook handler", () => {
     expect(response.statusCode).toBe(200);
   });
 
-  test("should handle removing bot from group", async () => {
+  test("handles removing bot from group", async () => {
     const removedFromGroupEvent = {
       update_id: 123456789,
       my_chat_member: {

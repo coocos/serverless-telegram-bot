@@ -47,7 +47,7 @@ describe("MiniTelegramClient", () => {
     server.close();
   });
 
-  test("sends message and returns response", async () => {
+  test("sends message and return response", async () => {
     const client = new MiniTelegramClient(token);
     const chatId = 1234;
     const message = "Hello Telegram!";
