@@ -1,5 +1,5 @@
 import type { APIGatewayProxyEventV2 } from "aws-lambda";
-import { UpdateEvent } from "../telegram/schemas";
+import { UpdateEvent } from "../telegram/schema";
 import { chatRepository } from "../repository/chat";
 
 export const handler = async (event: APIGatewayProxyEventV2) => {

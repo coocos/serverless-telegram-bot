@@ -25,6 +25,13 @@ const MyChatMember = z.object({
   new_chat_member: ChatMember,
 });
 
+export const Message = z.object({
+  message_id: z.number(),
+  date: z.number(),
+  text: z.string(),
+  chat: Chat,
+});
+
 export const UpdateEvent = z.object({
   update_id: z.number(),
   my_chat_member: MyChatMember.optional(),
