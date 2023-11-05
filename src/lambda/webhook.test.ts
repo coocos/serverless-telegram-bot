@@ -1,8 +1,9 @@
 import { handler } from "./webhook";
-import { chatRepository } from "../repository/chat";
+import ChatRepository from "../repository/chatRepository";
 import { APIGatewayProxyEventV2 } from "aws-lambda";
 
-jest.mock("../repository/chat");
+jest.spyOn(ChatRepository.prototype, "add").mockImplementation();
+jest.spyOn(ChatRepository.prototype, "remove").mockImplementation();
 
 function createApiGatewayProxyEvent(
   body: Record<string, any>
@@ -43,6 +44,10 @@ function createApiGatewayProxyEvent(
 }
 
 describe("Webhook handler", () => {
+  afterAll(() => {
+    jest.restoreAllMocks();
+  });
+
   test("should handle adding bot to group", async () => {
     const addedToGroupEvent = {
       update_id: 123456789,
@@ -85,7 +90,7 @@ describe("Webhook handler", () => {
       createApiGatewayProxyEvent(addedToGroupEvent)
     );
 
-    expect(chatRepository.add).toHaveBeenCalledWith(-123456789);
+    expect(ChatRepository.prototype.add).toHaveBeenCalledWith(-123456789);
     expect(response.statusCode).toBe(200);
   });
 
@@ -131,7 +136,7 @@ describe("Webhook handler", () => {
       createApiGatewayProxyEvent(removedFromGroupEvent)
     );
 
-    expect(chatRepository.remove).toHaveBeenCalledWith(-123456789);
+    expect(ChatRepository.prototype.remove).toHaveBeenCalledWith(-123456789);
     expect(response.statusCode).toBe(200);
   });
 });
