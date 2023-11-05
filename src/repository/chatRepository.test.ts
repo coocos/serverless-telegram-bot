@@ -1,6 +1,6 @@
 import { Server } from "http";
 import ChatRepository from "./chatRepository";
-import { dynamoConfiguration, startDynamoServer } from "../tests/fakeDynamo";
+import { dynamoConfiguration, startDynamoServer } from "../test/fakeDynamo";
 
 describe("ChatRepository", () => {
   let dynamoServer: Server;
