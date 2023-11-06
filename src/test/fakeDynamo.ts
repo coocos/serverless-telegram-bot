@@ -6,7 +6,7 @@ import {
 import dynalite from "dynalite";
 
 export const dynamoConfiguration = {
-  table: "bot-table",
+  table: "telegram-bot",
   endpoint: "http://localhost:4567",
   region: "eu-north-1",
   credentials: {
@@ -17,7 +17,7 @@ export const dynamoConfiguration = {
 
 async function createTable() {
   const command = new CreateTableCommand({
-    TableName: "bot-table",
+    TableName: "telegram-bot",
     KeySchema: [
       { AttributeName: "pk", KeyType: "HASH" },
       { AttributeName: "sk", KeyType: "RANGE" },
