@@ -1,11 +1,28 @@
+import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 import { z } from "zod";
 
-const EnvironmentVariables = z.object({
-  TABLE_NAME: z.string(),
+const Config = z.object({
+  tableName: z.string(),
+  botToken: z.string(),
 });
 
-const parsedEnv = EnvironmentVariables.parse(process.env);
+let cachedConfig: z.infer<typeof Config>;
 
-export default {
-  tableName: parsedEnv.TABLE_NAME,
-};
+export async function getConfig() {
+  if (cachedConfig) {
+    return cachedConfig;
+  }
+  const ssmClient = new SSMClient();
+  const botToken = await ssmClient.send(
+    new GetParameterCommand({
+      Name: "/serverless-telegram-bot/bot-token",
+      WithDecryption: true,
+    })
+  );
+  cachedConfig = Config.parse({
+    tableName: process.env.TABLE_NAME,
+    botToken: botToken.Parameter?.Value,
+  });
+
+  return cachedConfig;
+}

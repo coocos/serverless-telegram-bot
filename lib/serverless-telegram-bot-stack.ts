@@ -38,6 +38,16 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
 
     table.grantReadWriteData(webhookHandler);
 
+    const telegramBotToken =
+      cdk.aws_ssm.StringParameter.fromSecureStringParameterAttributes(
+        this,
+        "TelegramBotToken",
+        {
+          parameterName: "/serverless-telegram-bot/bot-token",
+        }
+      );
+    telegramBotToken.grantRead(webhookHandler);
+
     new cdk.CfnOutput(this, "WebhookUrl", {
       value: webhookUrl.url,
       description: "Function URL for the webhook lambda",
