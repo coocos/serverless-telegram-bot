@@ -56,7 +56,7 @@ describe("Webhook lambda", () => {
       .mockImplementation();
     jest.mocked(getConfig).mockResolvedValue({
       tableName: "telegram-bot",
-      botToken: "test-api-token",
+      botToken: "test-bot-token",
     });
 
     const addedToGroupEvent = {
