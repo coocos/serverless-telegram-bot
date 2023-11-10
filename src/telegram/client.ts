@@ -6,11 +6,17 @@ export const SendMessageApiRequest = z.object({
   text: z.string(),
 });
 
-const SendMessageApiResponse = z.object({
+const ApiResponse = z.object({
   ok: z.boolean(),
   description: z.string().optional(),
-  result: Message.optional(),
 });
+
+const SendMessageApiResponse = z.intersection(
+  ApiResponse,
+  z.object({
+    result: Message.optional(),
+  })
+);
 
 export class MiniTelegramClient {
   #apiUrl: string;
@@ -36,5 +42,45 @@ export class MiniTelegramClient {
       throw new Error(`Failed to send message: ${apiResponse.description}`);
     }
     return Message.parse(apiResponse.result);
+  }
+
+  async setWebhook(webhookUrl: string) {
+    const url = `${this.#apiUrl}/setWebhook`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        url: webhookUrl,
+        max_connections: 2,
+        drop_pending_updates: true,
+      }),
+    });
+    const body = await response.json();
+    const apiResponse = ApiResponse.parse(body);
+    if (!apiResponse.ok) {
+      throw new Error(`Failed to set webhook: ${apiResponse.description}`);
+    }
+    return apiResponse;
+  }
+
+  async deleteWebhook() {
+    const url = `${this.#apiUrl}/deleteWebhook`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        drop_pending_updates: true,
+      }),
+    });
+    const body = await response.json();
+    const apiResponse = ApiResponse.parse(body);
+    if (!apiResponse.ok) {
+      throw new Error(`Failed to delete webhook: ${apiResponse.description}`);
+    }
+    return apiResponse;
   }
 }

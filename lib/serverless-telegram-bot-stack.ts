@@ -3,6 +3,8 @@ import * as lambda from "aws-cdk-lib/aws-lambda";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
+import { WebhookRegistration } from "./webhook-registration";
+import constants from "../src/constants";
 
 export class ServerlessTelegramBotStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -43,10 +45,15 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
         this,
         "TelegramBotToken",
         {
-          parameterName: "/serverless-telegram-bot/bot-token",
+          parameterName: constants.BOT_TOKEN_PARAMETER_NAME,
         }
       );
     telegramBotToken.grantRead(webhookHandler);
+
+    new WebhookRegistration(this, "WebhookRegistration", {
+      webhookUrl: webhookUrl.url,
+      botToken: telegramBotToken,
+    });
 
     new cdk.CfnOutput(this, "WebhookUrl", {
       value: webhookUrl.url,

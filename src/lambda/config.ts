@@ -1,5 +1,6 @@
 import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 import { z } from "zod";
+import constants from "../constants";
 
 const Config = z.object({
   tableName: z.string(),
@@ -15,7 +16,7 @@ export async function getConfig() {
   const ssmClient = new SSMClient();
   const botToken = await ssmClient.send(
     new GetParameterCommand({
-      Name: "/serverless-telegram-bot/bot-token",
+      Name: constants.BOT_TOKEN_PARAMETER_NAME,
       WithDecryption: true,
     })
   );

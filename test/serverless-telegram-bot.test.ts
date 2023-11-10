@@ -29,5 +29,6 @@ describe("ServerlessTelegramBotStack", () => {
         AttributeName: "ttl",
       },
     });
+    template.resourceCountIs("AWS::CloudFormation::CustomResource", 1);
   });
 });
