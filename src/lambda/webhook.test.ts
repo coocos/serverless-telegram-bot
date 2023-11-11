@@ -1,5 +1,5 @@
 import { handler } from "./webhook";
-import ChatRepository from "../repository/chatRepository";
+import ChatRepository from "../repository/chat-repository";
 import { APIGatewayProxyEventV2 } from "aws-lambda";
 import { MiniTelegramClient } from "../telegram/client";
 import { getConfig } from "./config";

@@ -11,10 +11,9 @@ type WebHookRegistrationProps = {
 };
 
 /**
- * A construct which sets the webhook URL with
- * Telegram API at deployment time using a custom
- * resource. When the resource is deleted, it
- * deletes the webhook.
+ * A construct which sets the webhook URL using Telegram API
+ * at deployment time via a custom resource. When the
+ * resource is deleted, it deletes the webhook.
  */
 export class WebhookRegistration extends Construct {
   constructor(scope: Construct, id: string, props: WebHookRegistrationProps) {

@@ -1,5 +1,5 @@
 import { Server } from "http";
-import ChatRepository from "./chatRepository";
+import ChatRepository from "./chat-repository";
 import { dynamoConfiguration, startDynamoServer } from "../test/fakeDynamo";
 
 describe("ChatRepository", () => {
