@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "jest --silent --verbose src/",
+    "test": "jest --silent --verbose --coverage src/",
     "test-cdk": "jest --silent --verbose test/",
     "cdk": "cdk",
     "lint": "eslint src/ test/ lib/ bin/"
