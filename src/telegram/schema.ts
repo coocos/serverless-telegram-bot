@@ -36,3 +36,5 @@ export const UpdateEvent = z.object({
   update_id: z.number(),
   my_chat_member: MyChatMember.optional(),
 });
+
+export type UpdateEvent = z.infer<typeof UpdateEvent>;

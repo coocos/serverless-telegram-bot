@@ -18,9 +18,11 @@ jobs:
           node-version: '18'
       - name: Install dependencies
         run: npm ci
-      - name: Build
-        run: npm run build --if-present
+      - name: Lint
+        run: npm run lint
       - name: Run tests
         run: npm test
       - name: Run CDK tests
         run: npm run test-cdk
+      - name: Build
+        run: npm run build --if-present
