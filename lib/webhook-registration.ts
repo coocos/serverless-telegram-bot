@@ -20,6 +20,7 @@ export class WebhookRegistration extends Construct {
     super(scope, id);
 
     const lambda = new NodejsFunction(this, "WebhookRegistrationLambda", {
+      description: "Lambda for registering webhook URL with Telegram",
       runtime: Runtime.NODEJS_18_X,
       entry: "./src/lambda/register-webhook.ts",
     });

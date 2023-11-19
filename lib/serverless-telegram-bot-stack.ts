@@ -35,6 +35,7 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
     });
 
     const dynamoStreamHandler = new NodejsFunction(this, "StreamHandler", {
+      description: "Lambda for reacting to chat additions and removals",
       runtime: lambda.Runtime.NODEJS_18_X,
       entry: "./src/lambda/stream-handler.ts",
       environment: {
@@ -48,6 +49,7 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
     );
 
     const webhookHandler = new NodejsFunction(this, "WebhookHandler", {
+      description: "Lambda for receiving events from Telegram",
       runtime: lambda.Runtime.NODEJS_18_X,
       entry: "./src/lambda/webhook.ts",
       environment: {
