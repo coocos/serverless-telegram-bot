@@ -17,7 +17,7 @@ type DynamoConfiguration = {
   };
 };
 
-const ChatItem = z.object({
+export const ChatItem = z.object({
   pk: z.literal("CHAT"),
   sk: z.number(),
   created: z.string(),

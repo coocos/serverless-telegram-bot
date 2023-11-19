@@ -2,7 +2,6 @@ import type { APIGatewayProxyEventV2 } from "aws-lambda";
 import { UpdateEvent } from "../telegram/schema";
 import ChatRepository from "../repository/chat-repository";
 import { getConfig } from "./config";
-import { MiniTelegramClient } from "../telegram/client";
 
 export const handler = async (event: APIGatewayProxyEventV2) => {
   if (!event.body) {
@@ -23,14 +22,15 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
       if (status === "member") {
         const chatId = updateEvent.my_chat_member.chat.id;
         await chatRepository.add(chatId);
-        const telegramClient = new MiniTelegramClient(config.botToken);
-        await telegramClient.sendMessage(chatId, "Thanks for inviting me!");
+        console.log("Added new chat", chatId);
       } else {
-        await chatRepository.remove(updateEvent.my_chat_member.chat.id);
+        const chatId = updateEvent.my_chat_member.chat.id;
+        await chatRepository.remove(chatId);
+        console.log("Removed chat", chatId);
       }
     }
   } catch (error) {
-    console.log("Failed to parse update event");
+    console.log("Failed to handle update event");
     console.log(error);
   }
   return {

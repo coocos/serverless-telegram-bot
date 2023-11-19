@@ -1,6 +1,12 @@
 import * as cdk from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
-import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
+import {
+  AttributeType,
+  BillingMode,
+  StreamViewType,
+  Table,
+} from "aws-cdk-lib/aws-dynamodb";
+import { DynamoEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
 import { WebhookRegistration } from "./webhook-registration";
@@ -25,7 +31,21 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
       readCapacity: 5,
       writeCapacity: 5,
       timeToLiveAttribute: "ttl",
+      stream: StreamViewType.NEW_IMAGE,
     });
+
+    const dynamoStreamHandler = new NodejsFunction(this, "StreamHandler", {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      entry: "./src/lambda/stream-handler.ts",
+      environment: {
+        TABLE_NAME: table.tableName,
+      },
+    });
+    dynamoStreamHandler.addEventSource(
+      new DynamoEventSource(table, {
+        startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+      })
+    );
 
     const webhookHandler = new NodejsFunction(this, "WebhookHandler", {
       runtime: lambda.Runtime.NODEJS_18_X,
@@ -49,6 +69,7 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
         }
       );
     telegramBotToken.grantRead(webhookHandler);
+    telegramBotToken.grantRead(dynamoStreamHandler);
 
     new WebhookRegistration(this, "WebhookRegistration", {
       webhookUrl: webhookUrl.url,

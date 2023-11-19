@@ -1,7 +1,6 @@
 import { handler } from "./webhook";
 import ChatRepository from "../repository/chat-repository";
 import { APIGatewayProxyEventV2 } from "aws-lambda";
-import { MiniTelegramClient } from "../telegram/client";
 import { getConfig } from "./config";
 import type { UpdateEvent } from "../telegram/schema";
 
@@ -44,19 +43,18 @@ function createApiGatewayProxyEvent(body: UpdateEvent): APIGatewayProxyEventV2 {
 }
 
 describe("Webhook lambda", () => {
+  beforeAll(() => {
+    jest.mocked(getConfig).mockResolvedValue({
+      tableName: "telegram-bot",
+      botToken: "test-bot-token",
+    });
+  });
   afterEach(async () => {
     jest.restoreAllMocks();
   });
 
   test("handles adding bot to group", async () => {
     jest.spyOn(ChatRepository.prototype, "add").mockImplementation();
-    jest
-      .spyOn(MiniTelegramClient.prototype, "sendMessage")
-      .mockImplementation();
-    jest.mocked(getConfig).mockResolvedValue({
-      tableName: "telegram-bot",
-      botToken: "test-bot-token",
-    });
 
     const addedToGroupEvent = {
       update_id: 123456789,
@@ -99,10 +97,6 @@ describe("Webhook lambda", () => {
     );
 
     expect(ChatRepository.prototype.add).toHaveBeenCalledWith(-123456789);
-    expect(MiniTelegramClient.prototype.sendMessage).toHaveBeenCalledWith(
-      -123456789,
-      "Thanks for inviting me!"
-    );
     expect(response.statusCode).toBe(200);
   });
 
