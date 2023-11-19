@@ -75,6 +75,7 @@ describe("MiniTelegramClient", () => {
             expect.objectContaining({
               url: "https://localhost/webhook",
               drop_pending_updates: true,
+              allowed_updates: ["my_chat_member"],
             })
           );
           return HttpResponse.json({

@@ -55,6 +55,7 @@ export class MiniTelegramClient {
         url: webhookUrl,
         max_connections: 2,
         drop_pending_updates: true,
+        allowed_updates: ["my_chat_member"],
       }),
     });
     const body = await response.json();
