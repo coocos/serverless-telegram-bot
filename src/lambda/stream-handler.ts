@@ -41,6 +41,7 @@ export async function handler(event: DynamoDBStreamEvent) {
   const config = await getConfig();
   const telegramClient = new MiniTelegramClient(config.botToken);
   for (const chat of newChats) {
+    console.log("Greeting", chat.sk);
     await telegramClient.sendMessage(chat.sk, "Thanks for inviting me!");
   }
 }

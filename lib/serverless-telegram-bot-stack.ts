@@ -11,10 +11,16 @@ import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
 import { WebhookRegistration } from "./webhook-registration";
 import constants from "../src/constants";
+import { LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
 
 export class ServerlessTelegramBotStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+
+    const sharedLogGroup = new LogGroup(this, "SharedLambdaLogGroup", {
+      retention: RetentionDays.ONE_MONTH,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
 
     const table = new Table(this, "BotTable", {
       tableName: "telegram-bot",
@@ -41,6 +47,8 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
       environment: {
         TABLE_NAME: table.tableName,
       },
+      logFormat: lambda.LogFormat.JSON,
+      logGroup: sharedLogGroup,
     });
     dynamoStreamHandler.addEventSource(
       new DynamoEventSource(table, {
@@ -55,6 +63,8 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
       environment: {
         TABLE_NAME: table.tableName,
       },
+      logFormat: lambda.LogFormat.JSON,
+      logGroup: sharedLogGroup,
     });
     const webhookUrl = webhookHandler.addFunctionUrl({
       authType: lambda.FunctionUrlAuthType.NONE,
@@ -76,6 +86,7 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
     new WebhookRegistration(this, "WebhookRegistration", {
       webhookUrl: webhookUrl.url,
       botToken: telegramBotToken,
+      logGroup: sharedLogGroup,
     });
 
     new cdk.CfnOutput(this, "WebhookUrl", {
