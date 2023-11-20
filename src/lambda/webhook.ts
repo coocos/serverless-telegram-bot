@@ -9,7 +9,6 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
       statusCode: 200,
     };
   }
-  console.log("Raw update event:", JSON.parse(event.body));
   const config = await getConfig();
 
   const chatRepository = new ChatRepository({

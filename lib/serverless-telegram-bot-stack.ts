@@ -1,5 +1,7 @@
 import * as cdk from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as events from "aws-cdk-lib/aws-events";
+import * as targets from "aws-cdk-lib/aws-events-targets";
 import {
   AttributeType,
   BillingMode,
@@ -10,8 +12,8 @@ import { DynamoEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
 import { WebhookRegistration } from "./webhook-registration";
-import constants from "../src/constants";
 import { LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
+import constants from "../src/constants";
 
 export class ServerlessTelegramBotStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -56,6 +58,31 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
       })
     );
 
+    const scheduledMessageHandler = new NodejsFunction(
+      this,
+      "ScheduledMessageHandler",
+      {
+        description: "Lambda for sending scheduled messages to chats",
+        runtime: lambda.Runtime.NODEJS_18_X,
+        entry: "./src/lambda/scheduled-message.ts",
+        environment: {
+          TABLE_NAME: table.tableName,
+        },
+        logFormat: lambda.LogFormat.JSON,
+        logGroup: sharedLogGroup,
+      }
+    );
+    table.grantReadData(scheduledMessageHandler);
+    const scheduledRule = new events.Rule(this, "ScheduledMessageRule", {
+      schedule: events.Schedule.cron({
+        minute: "10",
+        hour: "17",
+      }),
+    });
+    scheduledRule.addTarget(
+      new targets.LambdaFunction(scheduledMessageHandler)
+    );
+
     const webhookHandler = new NodejsFunction(this, "WebhookHandler", {
       description: "Lambda for receiving events from Telegram",
       runtime: lambda.Runtime.NODEJS_18_X,
@@ -69,7 +96,6 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
     const webhookUrl = webhookHandler.addFunctionUrl({
       authType: lambda.FunctionUrlAuthType.NONE,
     });
-
     table.grantReadWriteData(webhookHandler);
 
     const telegramBotToken =
@@ -82,6 +108,7 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
       );
     telegramBotToken.grantRead(webhookHandler);
     telegramBotToken.grantRead(dynamoStreamHandler);
+    telegramBotToken.grantRead(scheduledMessageHandler);
 
     new WebhookRegistration(this, "WebhookRegistration", {
       webhookUrl: webhookUrl.url,
