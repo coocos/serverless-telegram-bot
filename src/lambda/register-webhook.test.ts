@@ -1,13 +1,13 @@
 import { handler } from "./register-webhook";
 import { SSMClient } from "@aws-sdk/client-ssm";
-import { MiniTelegramClient } from "../telegram/client";
+import { MiniTelegramClient } from "../client/telegram";
 import {
   CloudFormationCustomResourceCreateEvent,
   CloudFormationCustomResourceDeleteEvent,
 } from "aws-lambda";
 
 jest.mock("@aws-sdk/client-ssm");
-jest.mock("../telegram/client");
+jest.mock("../client/telegram");
 
 describe("Webhook registration lambda", () => {
   beforeAll(() => {

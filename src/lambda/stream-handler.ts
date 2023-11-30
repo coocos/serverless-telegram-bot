@@ -7,7 +7,7 @@ import type { AttributeValue as AttributeValueWithUnknown } from "@aws-sdk/clien
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { getConfig } from "./config";
 import { ChatItem } from "../repository/chat-repository";
-import { MiniTelegramClient } from "../telegram/client";
+import { MiniTelegramClient } from "../client/telegram";
 
 interface InsertionEventRecord extends DynamoDBRecord {
   eventName: "INSERT";

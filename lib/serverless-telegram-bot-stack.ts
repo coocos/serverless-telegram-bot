@@ -70,6 +70,7 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
         },
         logFormat: lambda.LogFormat.JSON,
         logGroup: sharedLogGroup,
+        timeout: cdk.Duration.minutes(3),
       }
     );
     table.grantReadData(scheduledMessageHandler);
@@ -80,7 +81,9 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
       }),
     });
     scheduledRule.addTarget(
-      new targets.LambdaFunction(scheduledMessageHandler)
+      new targets.LambdaFunction(scheduledMessageHandler, {
+        retryAttempts: 0,
+      })
     );
 
     const webhookHandler = new NodejsFunction(this, "WebhookHandler", {
@@ -109,6 +112,18 @@ export class ServerlessTelegramBotStack extends cdk.Stack {
     telegramBotToken.grantRead(webhookHandler);
     telegramBotToken.grantRead(dynamoStreamHandler);
     telegramBotToken.grantRead(scheduledMessageHandler);
+
+    const dalleApiKey =
+      cdk.aws_ssm.StringParameter.fromSecureStringParameterAttributes(
+        this,
+        "DalleApiKey",
+        {
+          parameterName: constants.DALLE_API_KEY,
+        }
+      );
+    dalleApiKey.grantRead(webhookHandler);
+    dalleApiKey.grantRead(dynamoStreamHandler);
+    dalleApiKey.grantRead(scheduledMessageHandler);
 
     new WebhookRegistration(this, "WebhookRegistration", {
       webhookUrl: webhookUrl.url,

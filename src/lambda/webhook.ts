@@ -1,5 +1,5 @@
 import type { APIGatewayProxyEventV2 } from "aws-lambda";
-import { UpdateEvent } from "../telegram/schema";
+import { UpdateEvent } from "../client/telegram";
 import ChatRepository from "../repository/chat-repository";
 import { getConfig } from "./config";
 

@@ -1,5 +1,5 @@
 import { handler } from "./stream-handler";
-import { MiniTelegramClient } from "../telegram/client";
+import { MiniTelegramClient } from "../client/telegram";
 import { getConfig } from "./config";
 
 jest.mock("./config");
@@ -50,6 +50,7 @@ describe("Stream handler lambda", () => {
     jest.mocked(getConfig).mockResolvedValue({
       tableName: "telegram-bot",
       botToken: "test-bot-token",
+      dalleApiKey: "dalle-api-key",
     });
   });
 

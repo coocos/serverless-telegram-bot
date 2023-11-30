@@ -2,7 +2,7 @@ import { handler } from "./webhook";
 import ChatRepository from "../repository/chat-repository";
 import { APIGatewayProxyEventV2 } from "aws-lambda";
 import { getConfig } from "./config";
-import type { UpdateEvent } from "../telegram/schema";
+import type { UpdateEvent } from "../client/telegram";
 
 jest.mock("./config");
 
@@ -47,6 +47,7 @@ describe("Webhook lambda", () => {
     jest.mocked(getConfig).mockResolvedValue({
       tableName: "telegram-bot",
       botToken: "test-bot-token",
+      dalleApiKey: "dalle-api-key",
     });
   });
   afterEach(async () => {

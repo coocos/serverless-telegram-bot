@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { CloudFormationCustomResourceEvent } from "aws-lambda";
-import { MiniTelegramClient } from "../telegram/client";
+import { MiniTelegramClient } from "../client/telegram";
 import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 import constants from "../constants";
 
