@@ -6,9 +6,11 @@
 
 A serverless Telegram bot built on top of AWS Lambda using TypeScript & CDK. It sends a wholesome cat picture generated via DALL-E API once a day to all chats its been added to. You can use this as a base for creating serverless bots that broadcast something to all channels on a fixed schedule.
 
+[![CI](https://github.com/coocos/serverless-telegram-bot/actions/workflows/node.yml/badge.svg)](https://github.com/coocos/serverless-telegram-bot/actions/workflows/node.yml)
+
 ## Usage
 
-In order for the bot to work, you need to add two parameters to Parameter Store before running `npx cdk deploy`:
+In order for the bot to work, you need to add two parameters to Parameter Store before deploying the stack:
 
 - Telegram bot token (for interacting with the Telegram API - you can create the token via Botfather)
 - OpenAI API key (for DALL-E picture generation - you can create this via OpenAI)
