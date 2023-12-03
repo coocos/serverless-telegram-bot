@@ -24,7 +24,11 @@ After you've set these, you can deploy the stack with `npx cdk deploy`.
 
 When you deploy the stack, [a custom CloudFormation resource](./src/lambda/register-webhook.ts) automatically calls the Telegram API and sets the Telegram webhook URL to point to the created lambda function URL. The webhook is also removed via the Telegram API when the stack is torn down, i.e. you do not need to perform any manual operations to set the webhook.
 
-Once your bot is running, add it to your chat. The bot should send a greeting once it's been added. The bot will now send a cat picture once a day to your chat (as well as any other chats it's a part of).
+Once your bot is running, add it to your chat. The bot should send a greeting once it's been added. The bot will now send a cat picture once a day to your chat (as well as any other chats it's a part of):
+
+<p align="center">
+  <img src="https://github.com/coocos/serverless-telegram-bot/blob/main/docs/chat.jpeg?raw=true" alt="Cat bot in action"/>
+</p>
 
 ## Architecture
 
