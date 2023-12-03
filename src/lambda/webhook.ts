@@ -9,14 +9,13 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
       statusCode: 200,
     };
   }
-  const config = await getConfig();
-
-  const chatRepository = new ChatRepository({
-    table: config.tableName,
-  });
   try {
     const updateEvent = UpdateEvent.parse(JSON.parse(event.body));
     if (updateEvent.my_chat_member) {
+      const config = await getConfig();
+      const chatRepository = new ChatRepository({
+        table: config.tableName,
+      });
       const status = updateEvent.my_chat_member.new_chat_member.status;
       if (status === "member") {
         const chatId = updateEvent.my_chat_member.chat.id;
